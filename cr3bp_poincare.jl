@@ -102,12 +102,12 @@ function poincare_affect!(integrator)
 end
 
 """
-    compute_poincare_section(x0, y0, vx0, C, n_periods, t_max, μ)
+    compute_poincare_section(x0, y0, vx0, C, t_max, μ)
 
 Compute Poincare surface of section for given initial conditions.
 Returns array of (x, vx) points at y = 0 crossings.
 """
-function compute_poincare_section(x0, y0, vx0, C, n_periods, t_max, μ)
+function compute_poincare_section(x0, y0, vx0, C, t_max, μ)
     # Calculate vy0 from Jacobi constant
     vy0 = calculate_vy_from_jacobi(x0, y0, vx0, C, μ)
     
@@ -148,7 +148,7 @@ function generate_poincare_map(C, x_range, vx_range, n_x, n_vx, t_max, μ)
     
     for x0 in x_values
         for vx0 in vx_values
-            points = compute_poincare_section(x0, 0.0, vx0, C, 100, t_max, μ)
+            points = compute_poincare_section(x0, 0.0, vx0, C, t_max, μ)
             append!(all_points, points)
         end
     end
@@ -221,7 +221,9 @@ function main()
     # Test with a single trajectory first
     println("Testing single trajectory...")
     x0, y0, vx0 = 0.8, 0.0, 0.0
-    C = jacobi_constant(x0, y0, vx0, 0.3, μ)
+    # Use vy0 = 0.3 as a test value for a periodic orbit near L4/L5
+    test_vy0 = 0.3
+    C = jacobi_constant(x0, y0, vx0, test_vy0, μ)
     println("Initial condition: x0=$x0, y0=$y0, vx0=$vx0")
     println("Jacobi constant C = $C")
     
